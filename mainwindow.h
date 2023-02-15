@@ -18,6 +18,8 @@ public:
 private slots:
     void on_chooseBtn_clicked();
 
+    void on_searchBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

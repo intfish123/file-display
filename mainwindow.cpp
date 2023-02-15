@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->searchBtn->setShortcut(Qt::Key_Return);
 }
 
 MainWindow::~MainWindow()
@@ -50,7 +51,25 @@ void MainWindow::on_chooseBtn_clicked()
         return;
     }
     ui->dirPath->setText(dirPath);
+
+}
+
+
+void MainWindow::on_searchBtn_clicked()
+{
     ui->textBrowser->clear();
+    QString dirPath = ui->dirPath->text();
+    if(dirPath.isNull() || dirPath.isEmpty())
+    {
+        QMessageBox::warning(this, "提示", "请选择文件夹");
+        return;
+    }
+    QDir dir(dirPath);
+    if(!dir.exists())
+    {
+        QMessageBox::warning(this, "提示", "文件夹不存在");
+        return;
+    }
 
     QVector<QString> fileList;
 
@@ -115,6 +134,10 @@ void MainWindow::on_chooseBtn_clicked()
             ui->textBrowser->append(fname);
         }
 
+    }
+    if(ui->textBrowser->toPlainText() == nullptr || ui->textBrowser->toPlainText().isNull() || ui->textBrowser->toPlainText().isEmpty())
+    {
+        ui->textBrowser->setText("没有数据");
     }
 
 }
