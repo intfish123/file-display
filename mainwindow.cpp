@@ -102,6 +102,7 @@ void MainWindow::on_searchBtn_clicked()
     bool withSuffix = ui->displaySuffixBtn->isChecked();
     QString keyword = ui->keyword->text();
     bool isScreenOutKeyword = ui->isScreenOutKeyword->isChecked();
+    QVector<QString> displayContent;
     for(auto i = fileList.begin(); i != fileList.end(); i++)
     {
         QString fname = *i;
@@ -119,22 +120,36 @@ void MainWindow::on_searchBtn_clicked()
             {
                 if(!fname.contains(keyword, Qt::CaseInsensitive))
                 {
-                    ui->textBrowser->append(fname);
+//                    ui->textBrowser->append(fname);
+                    displayContent.append(fname);
                 }
             }
             else // 如果是筛选
             {
                 if(fname.contains(keyword, Qt::CaseInsensitive))
                 {
-                    ui->textBrowser->append(fname);
+//                    ui->textBrowser->append(fname);
+                    displayContent.append(fname);
                 }
             }
         }
         else{ // 如果keyword为空
-            ui->textBrowser->append(fname);
+//            ui->textBrowser->append(fname);
+            displayContent.append(fname);
         }
-
     }
+
+    QString needDelText = ui->needDelContent->text();
+    for(auto i = displayContent.begin(); i != displayContent.end(); i++)
+    {
+        QString fname = *i;
+        if(needDelText != nullptr && !needDelText.isNull() && !needDelText.isEmpty())
+        {
+            fname = fname.replace(needDelText, "");
+        }
+        ui->textBrowser->append(fname);
+    }
+
     if(ui->textBrowser->toPlainText() == nullptr || ui->textBrowser->toPlainText().isNull() || ui->textBrowser->toPlainText().isEmpty())
     {
         ui->textBrowser->setText("没有数据");
