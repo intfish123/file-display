@@ -20,6 +20,26 @@ MainWindow::~MainWindow()
 }
 
 
+void searchFileNames(const QDir &dir, QVector<QString> &ret)
+{
+    if(!dir.exists())
+    {
+        return;
+    }
+    QDir tmp(dir);
+    tmp.setFilter(QDir::Files);
+    QFileInfoList list = tmp.entryInfoList();
+    for(int i=0; i<list.size(); i++)
+    {
+        ret.append(list.at(i).fileName());
+    }
+    QCollator collator;
+    collator.setNumericMode(true);
+    collator.setCaseSensitivity(Qt::CaseInsensitive);
+    std::sort(ret.begin(), ret.end(), collator);
+}
+
+
 void MainWindow::on_chooseBtn_clicked()
 {
     QString dirPath = QFileDialog::getExistingDirectory(this,"选择目录", "./", QFileDialog::ShowDirsOnly);
@@ -31,24 +51,38 @@ void MainWindow::on_chooseBtn_clicked()
     }
     ui->dirPath->setText(dirPath);
     ui->textBrowser->clear();
-    dir.setFilter(QDir::Files);
-    QFileInfoList list = dir.entryInfoList();
 
     QVector<QString> fileList;
 
-    bool withSuffix = ui->displaySuffixBtn->isChecked();
-
-    for(int i=0; i<list.size(); i++)
+    if (ui->isRecursionFolder->isChecked())
     {
-        fileList.append(list.at(i).fileName());
+        QVector<QDir> dirQueue;
+        dirQueue.append(dir);
+        while(!dirQueue.empty())
+        {
+            QDir tmp = dirQueue.takeFirst();
+            searchFileNames(tmp, fileList);
+
+            tmp.setFilter(QDir::Dirs |QDir::NoDotAndDotDot);
+            tmp.setSorting(QDir::SortFlag::DirsFirst);
+            QFileInfoList list = tmp.entryInfoList();
+            for(int i=0; i<list.size(); i++)
+            {
+                if (list.at(i).isDir())
+                {
+                    dirQueue.append(QDir(list.at(i).absoluteFilePath()));
+                }
+            }
+        }
+    }
+    else
+    {
+       searchFileNames(dir, fileList);
     }
 
-    QCollator collator;
-    collator.setNumericMode(true);
-    collator.setCaseSensitivity(Qt::CaseInsensitive);
-
-    std::sort(fileList.begin(), fileList.end(), collator);
-
+    bool withSuffix = ui->displaySuffixBtn->isChecked();
+    QString keyword = ui->keyword->text();
+    bool isScreenOutKeyword = ui->isScreenOutKeyword->isChecked();
     for(auto i = fileList.begin(); i != fileList.end(); i++)
     {
         QString fname = *i;
@@ -60,7 +94,27 @@ void MainWindow::on_chooseBtn_clicked()
                 fname = fname.left(dot);
             }
         }
-        ui->textBrowser->append(fname);
+        if(!keyword.isNull() && !keyword.isEmpty())
+        {
+            if(isScreenOutKeyword) // 如果是筛除
+            {
+                if(!fname.contains(keyword, Qt::CaseInsensitive))
+                {
+                    ui->textBrowser->append(fname);
+                }
+            }
+            else // 如果是筛选
+            {
+                if(fname.contains(keyword, Qt::CaseInsensitive))
+                {
+                    ui->textBrowser->append(fname);
+                }
+            }
+        }
+        else{ // 如果keyword为空
+            ui->textBrowser->append(fname);
+        }
+
     }
 
 }
