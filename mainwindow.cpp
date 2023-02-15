@@ -43,7 +43,8 @@ void searchFileNames(const QDir &dir, QVector<QString> &ret)
 
 void MainWindow::on_chooseBtn_clicked()
 {
-    QString dirPath = QFileDialog::getExistingDirectory(this,"选择目录", "./", QFileDialog::ShowDirsOnly);
+    QString curPath=QDir::currentPath();//获取系统当前目录
+    QString dirPath = QFileDialog::getExistingDirectory(this,"选择目录", curPath, QFileDialog::ShowDirsOnly);
     QDir dir(dirPath);
     if(!dir.exists())
     {
