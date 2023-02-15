@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>文件遍历器</string>
+   <string>文件遍历器     powered by 高秀敏</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLineEdit" name="dirPath">
@@ -152,9 +152,9 @@
    <widget class="QPushButton" name="searchBtn">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>440</x>
       <y>83</y>
-      <width>71</width>
+      <width>91</width>
       <height>32</height>
      </rect>
     </property>
