@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QVector>
 #include <QCollator>
+
 #include "./ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->searchBtn->setShortcut(Qt::Key_Return);
+//    ui->searchBtn->setShortcut(Qt::Key_Return);
+    re.setPattern("[\r\n]");
 }
 
 MainWindow::~MainWindow()
@@ -156,5 +158,66 @@ void MainWindow::on_searchBtn_clicked()
         ui->textBrowser->setText("没有数据");
     }
 
+}
+
+
+void MainWindow::on_dealContent_clicked()
+{
+    QString content = ui->textBrowser->toPlainText();
+    if(content.isNull() || content.isEmpty())
+    {
+        return;
+    }
+    QStringList lines = content.split(re, Qt::SkipEmptyParts);
+    QVector<QString> newLines;
+    QString keyword = ui->keyword->text();
+    bool isScreenOutKeyword = ui->isScreenOutKeyword->isChecked();
+    if(!keyword.isNull() && !keyword.isEmpty())
+    {
+        for(auto it = lines.begin(); it != lines.end(); it++)
+        {
+            QString fname = *it;
+            if(isScreenOutKeyword) // 如果是筛除
+            {
+                if(!fname.contains(keyword, Qt::CaseInsensitive))
+                {
+                    newLines.append(fname);
+                }
+            }
+            else // 如果是筛选
+            {
+                if(fname.contains(keyword, Qt::CaseInsensitive))
+                {
+                    newLines.append(fname);
+                }
+            }
+        }
+    }
+    else
+    {
+        for(auto it = lines.begin(); it != lines.end(); it++)
+        {
+            newLines.append(*it);
+        }
+    }
+
+    QString needDelText = ui->needDelContent->text();
+    if(needDelText != nullptr && !needDelText.isNull() && !needDelText.isEmpty())
+    {
+
+        for(auto it = newLines.begin(); it != newLines.end(); it++)
+        {
+            QString fname = *it;
+            *it = fname.replace(needDelText, "");
+        }
+    }
+
+    QString newContent;
+    for(auto it = newLines.begin(); it != newLines.end(); it++)
+    {
+        newContent.append(*it);
+        newContent.append("\n");
+    }
+    ui->textBrowser->setPlainText(newContent);
 }
 

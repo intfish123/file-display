@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QRegularExpression>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,7 +21,10 @@ private slots:
 
     void on_searchBtn_clicked();
 
+    void on_dealContent_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QRegularExpression re;
 };
 #endif // MAINWINDOW_H
