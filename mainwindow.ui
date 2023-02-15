@@ -36,9 +36,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>210</y>
+      <y>230</y>
       <width>561</width>
-      <height>401</height>
+      <height>381</height>
      </rect>
     </property>
     <property name="undoRedoEnabled">
@@ -102,16 +102,16 @@
     <widget class="QPushButton" name="searchBtn">
      <property name="geometry">
       <rect>
-       <x>440</x>
+       <x>430</x>
        <y>60</y>
-       <width>111</width>
+       <width>121</width>
        <height>32</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <pointsize>14</pointsize>
-       <bold>true</bold>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -151,44 +151,12 @@
       <x>10</x>
       <y>100</y>
       <width>561</width>
-      <height>101</height>
+      <height>121</height>
      </rect>
     </property>
     <property name="title">
      <string>文本处理</string>
     </property>
-    <widget class="QLineEdit" name="needDelContent">
-     <property name="geometry">
-      <rect>
-       <x>73</x>
-       <y>60</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string>请输入需要删除的字符</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="keyword">
-     <property name="geometry">
-      <rect>
-       <x>57</x>
-       <y>26</y>
-       <width>261</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string>请输入关键字进行筛选或筛除(默认为筛选)</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
@@ -205,7 +173,7 @@
     <widget class="QCheckBox" name="isScreenOutKeyword">
      <property name="geometry">
       <rect>
-       <x>320</x>
+       <x>340</x>
        <y>32</y>
        <width>121</width>
        <height>20</height>
@@ -239,6 +207,32 @@
      </property>
      <property name="text">
       <string>点我处理文本</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="keyword">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>27</y>
+       <width>271</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="placeholderText">
+      <string>请输入关键字进行筛选或筛除(默认为筛选)</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="needDelContent">
+     <property name="geometry">
+      <rect>
+       <x>72</x>
+       <y>62</y>
+       <width>351</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="placeholderText">
+      <string>请输入需要删除的字符，多个字符串用多行文本表示</string>
      </property>
     </widget>
    </widget>

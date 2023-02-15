@@ -142,13 +142,18 @@ void MainWindow::on_searchBtn_clicked()
         }
     }
 
-    QString needDelText = ui->needDelContent->text();
+    QString needDelText = ui->needDelContent->toPlainText();
     for(auto i = displayContent.begin(); i != displayContent.end(); i++)
     {
         QString fname = *i;
         if(needDelText != nullptr && !needDelText.isNull() && !needDelText.isEmpty())
         {
-            fname = fname.replace(needDelText, "");
+            QStringList delLines = needDelText.split(re, Qt::SkipEmptyParts);
+            for(auto j = delLines.begin(); j != delLines.end(); j++)
+            {
+                fname = fname.replace(*j, "");
+            }
+
         }
         ui->textBrowser->append(fname);
     }
@@ -201,14 +206,18 @@ void MainWindow::on_dealContent_clicked()
         }
     }
 
-    QString needDelText = ui->needDelContent->text();
+    QString needDelText = ui->needDelContent->toPlainText();
     if(needDelText != nullptr && !needDelText.isNull() && !needDelText.isEmpty())
     {
 
         for(auto it = newLines.begin(); it != newLines.end(); it++)
         {
             QString fname = *it;
-            *it = fname.replace(needDelText, "");
+            QStringList delLines = needDelText.split(re, Qt::SkipEmptyParts);
+            for(auto j = delLines.begin(); j != delLines.end(); j++)
+            {
+                *it = fname.replace(*j, "");
+            }
         }
     }
 
