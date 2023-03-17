@@ -5,6 +5,11 @@
 #include <QMessageBox>
 #include <QVector>
 #include <QCollator>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
+
+
 
 #include "./ui_mainwindow.h"
 
@@ -13,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setAcceptDrops(true);
 //    ui->searchBtn->setShortcut(Qt::Key_Return);
     re.setPattern("[\r\n]");
 }
@@ -23,14 +29,22 @@ MainWindow::~MainWindow()
 }
 
 
-void searchFileNames(const QDir &dir, QVector<QString> &ret)
+void searchFileNames(const QDir &dir,bool withDir, QVector<QString> &ret)
 {
     if(!dir.exists())
     {
         return;
     }
     QDir tmp(dir);
-    tmp.setFilter(QDir::Files);
+    if(!withDir)
+    {
+        tmp.setFilter(QDir::Files);
+    }
+    else
+    {
+        tmp.setFilter(QDir::Files|QDir::Dirs|QDir::NoDotAndDotDot);
+    }
+
     QFileInfoList list = tmp.entryInfoList();
     for(int i=0; i<list.size(); i++)
     {
@@ -83,7 +97,7 @@ void MainWindow::on_searchBtn_clicked()
         while(!dirQueue.empty())
         {
             QDir tmp = dirQueue.takeFirst();
-            searchFileNames(tmp, fileList);
+            searchFileNames(tmp, false, fileList);
 
             tmp.setFilter(QDir::Dirs |QDir::NoDotAndDotDot);
             tmp.setSorting(QDir::SortFlag::DirsFirst);
@@ -99,7 +113,7 @@ void MainWindow::on_searchBtn_clicked()
     }
     else
     {
-       searchFileNames(dir, fileList);
+       searchFileNames(dir, true, fileList);
     }
 
     bool withSuffix = ui->displaySuffixBtn->isChecked();
@@ -230,3 +244,24 @@ void MainWindow::on_dealContent_clicked()
     ui->textBrowser->setPlainText(newContent);
 }
 
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls())
+    {
+        event->acceptProposedAction();
+    }
+    else
+    {
+        event->ignore();
+    }
+}
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    QList<QUrl> list = event->mimeData()->urls();
+    if(list.empty())
+    {
+        return;
+    }
+    QString fileName = list.first().toLocalFile();
+    ui->dirPath->setText(fileName);
+}
